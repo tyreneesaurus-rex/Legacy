@@ -1,11 +1,15 @@
 class Course < ActiveRecord::Base
 
   default_scope { order("courses.term_id DESC, courses.course_code, courses.id DESC") }
-
+  
   # Magic number also used in old? method below.
   scope :active, -> { includes(:term).where("terms.ends_on >= ?", Time.now - 1.month) }
 
   scope :for_school_id, ->(school_id) { includes(:term).where("terms.school_id = ?", school_id) }
+
+  has_many :lessons, dependent: :destroy
+  has_many :course_instructors
+  has_many :course_students, dependent: :restrict_with_error
 
   delegate :starts_on, to: :term, prefix: true
   delegate :ends_on, to: :term, prefix: true
