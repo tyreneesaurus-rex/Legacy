@@ -1,7 +1,10 @@
 class Course < ActiveRecord::Base
-  belongs_to :term
-  has_many :course_students, dependent: :restrict_with_error
-  has_many :assignments, dependent: :destroy
+  belongs_to  :term
+  has_many    :course_students,   dependent: :restrict_with_error
+  has_many    :assignments,       dependent: :destroy
+
+  validates   :name,              presence: :true
+  validates   :course_code,       presence: :true,                uniqueness: {scope: :term_id},      format: /[a-z]{3}\d{3}/i
 
   default_scope { order("courses.term_id DESC, courses.course_code, courses.id DESC") }
 
@@ -9,6 +12,7 @@ class Course < ActiveRecord::Base
   scope :active, -> { includes(:term).where("terms.ends_on >= ?", Time.now - 1.month) }
 
   scope :for_school_id, ->(school_id) { includes(:term).where("terms.school_id = ?", school_id) }
+  scope :for_term, ->(term_id) {includes(:term).where("terms.term_id = ?", term_id)}
 
   delegate :starts_on, to: :term, prefix: true
   delegate :ends_on, to: :term, prefix: true
