@@ -43,10 +43,17 @@ class ApplicationTest < Minitest::Test
 
   def test_terms_with_courses_cannot_be_deleted
     term = Term.new(name: "Fall Semester")
-    term.courses << Course.new(name: "Calculus II")
+    term.courses << Course.new(name: "Data Structures")
 
     refute term.destroy
 
   end
 
+  def test_courses_with_course_students_cannot_be_deleted
+    ps = Course.new(name: "Pot Smashing 101")
+    ps.course_students << CourseStudent.new(student_id: 3)
+
+    refute ps.destroy
+
+  end
 end
