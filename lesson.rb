@@ -1,4 +1,5 @@
 class Lesson < ActiveRecord::Base
+  has_many :assignments
   delegate :code_and_name, to: :course, prefix: true
 
   scope :roots, -> { where("parent_lesson_id IS NULL") }

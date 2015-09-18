@@ -54,7 +54,6 @@ class ApplicationTest < Minitest::Test
     ps.course_students << CourseStudent.new(student_id: 3)
 
     refute ps.destroy
-
   end
 
   def test_delete_assignments_when_course_is_deleted_06
@@ -64,6 +63,11 @@ class ApplicationTest < Minitest::Test
     a = Assignment.count
     ps.destroy
     assert Assignment.count < a
+  end
+
+  def test_lessons_have_assignments_07
+    l = Lesson.new(name: "Getting in Your Victim's Home")
+    assert l.assignments << Assignment.new(name: "Step 1: Open their front door")
 
   end
 end
