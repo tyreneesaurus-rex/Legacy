@@ -2,7 +2,7 @@ class Lesson < ActiveRecord::Base
   delegate :code_and_name, to: :course, prefix: true
   belongs_to :course
   has_many :readings, dependent: :destroy
-  #has_many :in_class_assignment
+  belongs_to :in_assignment, class_name: "Assignment"
 
   scope :roots, -> { where("parent_lesson_id IS NULL") }
   scope :without_day_assignments, -> { where("day_assignment_id IS NULL") }
