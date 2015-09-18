@@ -27,7 +27,7 @@ class ApplicationTest < Minitest::Test
 
   def test_associate_schools_and_terms_02
     assert School.reflect_on_association(:terms).macro == :has_many
-    assert Term.reflect_on_association(:schools).macro == :belongs_to
+    assert Term.reflect_on_association(:school).macro == :belongs_to
 
     s = School.new(name: "Ridgemont High")
     assert s.terms << Term.new(name: "Fall Semester")
@@ -68,6 +68,13 @@ class ApplicationTest < Minitest::Test
   def test_lessons_have_assignments_07
     l = Lesson.new(name: "Getting in Your Victim's Home")
     assert l.assignments << Assignment.new(name: "Step 1: Open their front door")
+  end
 
+  def test_schools_have_many_courses
+    s = School.new(name: "Hylian High")
+    t = Term.new(name: "Fall Semester")
+    t.courses << Course.new(name: "Dealing with Gorons")
+    
+    assert s.courses
   end
 end
