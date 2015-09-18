@@ -70,11 +70,47 @@ class ApplicationTest < Minitest::Test
     assert l.assignments << Assignment.new(name: "Step 1: Open their front door")
   end
 
-  def test_schools_have_many_courses
+  def test_schools_have_many_courses_08
     s = School.new(name: "Hylian High")
     t = Term.new(name: "Fall Semester")
     t.courses << Course.new(name: "Dealing with Gorons")
-    
+
     assert s.courses
   end
+
+  def test_lessons_must_have_names_09
+    l = Lesson.new()
+    refute l.save
+
+    l = Lesson.new(name: "Be Sure to Check Upstairs")
+    assert l.save
+  end
+
+  def test_readings_have_order_lesson_id_and_a_url_10
+    r = Reading.new
+    refute r.save
+
+    r = Reading.new(order_number: 1)
+    refute r.save
+
+    r = Reading.new(order_number: 1, lesson_id: 4)
+    refute r.save
+
+    r = Reading.new(order_number: 1, url: "http://www.example.com")
+    refute r.save
+
+    r = Reading.new(order_number: 1, lesson_id: 4, url: "http://www.example.com")
+    assert r.save
+  end
+
+  # def test_reading_url_starts_with_http_11
+  #   r = Reading.new(order_number: 1, lesson_id: 4, url: "htt//www.example.com")
+  #   refute r.save
+  #
+  #   r = Reading.new(order_number: 1, lesson_id: 4, url: "https://www.example.com")
+  #   assert r.save
+  #
+  #   r = Reading.new(order_number: 1, lesson_id: 4, url: "http://www.example.com")
+  #   assert r.save
+  # end
 end
