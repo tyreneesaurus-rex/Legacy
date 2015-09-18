@@ -25,4 +25,28 @@ class ApplicationTest < Minitest::Test
     assert true
   end
 
+  def test_associate_schools_and_terms
+    assert School.reflect_on_association(:terms).macro == :has_many
+    assert Term.reflect_on_association(:schools).macro == :belongs_to
+
+    s = School.new(name: "Ridgemont High")
+    assert s.terms << Term.new(name: "Fall Semester")
+  end
+
+  def test_associate_courses_and_terms
+    assert Course.reflect_on_association(:term).macro == :belongs_to
+    assert Term.reflect_on_association(:courses).macro == :has_many
+
+    t = Term.new(name: "Fall Semeter")
+    assert t.courses << Course.new(name: "Data Structures")
+  end
+
+  def test_terms_with_courses_cannot_be_deleted
+    term = Term.new(name: "Fall Semester")
+    term.courses << Course.new(name: "Calculus II")
+
+    refute term.destroy
+
+  end
+
 end
