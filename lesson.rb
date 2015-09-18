@@ -1,5 +1,5 @@
 class Lesson < ActiveRecord::Base
-  has_many :assignments
+  has_many :assignments, foreign_key: :pre_class_assignment_id
   delegate :code_and_name, to: :course, prefix: true
 
   validates :name, presence: :true

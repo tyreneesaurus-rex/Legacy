@@ -4,7 +4,7 @@ class Course < ActiveRecord::Base
   has_many    :assignments,       dependent: :destroy
 
   validates   :name,              presence: :true
-  validates   :course_code,       presence: :true,                uniqueness: {scope: :term_id},      format: /[a-z]{3}\d{3}/i
+  validates   :course_code,       presence: :true,                   uniqueness: {scope: :term_id},      format: /[a-z]{3}\d{3}/i
 
   default_scope { order("courses.term_id DESC, courses.course_code, courses.id DESC") }
 
