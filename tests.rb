@@ -66,8 +66,11 @@ class ApplicationTest < Minitest::Test
   end
 
   def test_lessons_have_assignments_07
-    l = Lesson.new(name: "Getting in Your Victim's Home")
-    assert l.assignments << Assignment.new(name: "Step 1: Open their front door")
+    l = Lesson.create(name: "Getting in Your Victim's Home")
+    a = Assignment.create(name: "Step 1: Open their front door")
+    a.pre_lessons << l
+    assert a.reload.pre_lessons.include?(l)
+
   end
 
   def test_schools_have_many_courses_08
@@ -128,7 +131,7 @@ class ApplicationTest < Minitest::Test
     assert c.save
   end
 
-  def test_course_id_must_be_unique_in_term
+  def test_course_id_must_be_unique_in_term_13
     ft = Term.create(name: "Fall Semester")
     st = Term.create(name: "Spring Semester")
     c = Course.create(name: "Recreational Ocarina", course_code: "OCR202")
