@@ -1,6 +1,5 @@
 class Course < ActiveRecord::Base
   belongs_to  :term
-  has_many    :course_students,   dependent: :restrict_with_error
   has_many    :assignments,       dependent: :destroy#,              foreign_key: :pre_class_assignment_id
 
   validates   :name,              presence: :true
@@ -13,6 +12,11 @@ class Course < ActiveRecord::Base
 
   scope :for_school_id, ->(school_id) { includes(:term).where("terms.school_id = ?", school_id) }
   scope :for_term, ->(term_id) {includes(:term).where("terms.term_id = ?", term_id)}
+
+  has_many :lessons, dependent: :destroy
+  has_many :course_instructors
+  has_many :course_students, dependent: :restrict_with_error
+  has_many :readings, through: :lessons
 
   delegate :starts_on, to: :term, prefix: true
   delegate :ends_on, to: :term, prefix: true
