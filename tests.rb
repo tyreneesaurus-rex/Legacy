@@ -16,13 +16,15 @@ ActiveRecord::Migration.verbose = false
 # Gotta run migrations before we can run tests.  Down will fail the first time,
 # so we wrap it in a begin/rescue.
 
-def setup
-  begin ApplicationMigration.migrate(:down); rescue; end
-  ApplicationMigration.migrate(:up)
-end
+
 
 # Finally!  Let's test the thing.
 class ApplicationTest < Minitest::Test
+
+  def setup
+    begin ApplicationMigration.migrate(:down); rescue; end
+    ApplicationMigration.migrate(:up)
+  end
 
   def test_truth_01
     assert true
@@ -61,7 +63,7 @@ class ApplicationTest < Minitest::Test
 
   def test_delete_assignments_when_course_is_deleted_06
     ps = Course.new(name: "Pot Smashing 101", course_code: "BRK101")
-    ps.assignments << Assignment.create(name: "Pot Lifting Safety")
+    ps.assignments << Assignment.create(name: "Pot Lifting Safety", course_id: 5, percent_of_grade:99)
 
     a = Assignment.count
     ps.destroy
@@ -70,7 +72,7 @@ class ApplicationTest < Minitest::Test
 
   def test_lessons_have_assignments_07
     l = Lesson.create(name: "Getting in Your Victim's Home")
-    a = Assignment.create(name: "Step 1: Open their front door")
+    a = Assignment.create(name: "Step 1: Open their front door", course_id: 3, percent_of_grade: 25)
     a.pre_lessons << l
     assert a.reload.pre_lessons.include?(l)
 
@@ -135,8 +137,8 @@ class ApplicationTest < Minitest::Test
   end
 
   def test_course_id_must_be_unique_in_term_13
-    ft = Term.create(name: "Fall Semester")
-    st = Term.create(name: "Spring Semester")
+    ft = Term.create(name: "Fall Semester", starts_on: "09-01-1900", ends_on:"12-21-1900", school_id: 4 )
+    st = Term.create(name: "Spring Semester", starts_on: "01-01-1900", ends_on:"06-15-1900", school_id: 4)
     c = Course.create(name: "Recreational Ocarina", course_code: "OCR202")
 
     c.term = ft
@@ -147,8 +149,8 @@ class ApplicationTest < Minitest::Test
     c.term = ft
     refute c.save
 
-    c.term = st
-    assert st.save
+    c.term_id = 999
+    assert c.save
   end
 
   def test_validate_3_letters_3_numbers_course_code_14
@@ -160,13 +162,13 @@ class ApplicationTest < Minitest::Test
 
     c.course_code = "444"
     refute c.save
-
+  end
 
 
   def test_lessons_and_readings_dependent
     before = Reading.count #counter, hooray!
-    new_reading = Reading.create()
-    lesson = Lesson.create()
+    new_reading = Reading.create(order_number: 1, lesson_id: 4, url: "https://www.example.com")
+    lesson = Lesson.create(name: "HEY, LISTEN!")
     lesson.readings << new_reading #adding new reading to lesson
     assert lesson.reload.readings.include?(new_reading)
     assert 1, Reading.count #is there a new reading in lesson?
@@ -176,8 +178,8 @@ class ApplicationTest < Minitest::Test
 
   def test_courses_and_lessons_dependent
     before = Lesson.count
-    new_lesson = Lesson.create()
-    course = Course.create()
+    new_lesson = Lesson.create(name: "Exploring Foreign Trees")
+    course = Course.create(name: "Deku Studies", course_code: "DKS114")
     course.lessons << new_lesson
     assert course.reload.lessons.include?(new_lesson)
     assert 1, Lesson.count
@@ -188,7 +190,7 @@ class ApplicationTest < Minitest::Test
   def test_course_to_instructor
     new_instructor = CourseInstructor.create()
     new_student = CourseStudent.create()
-    course = Course.create()
+    course = Course.create(name: "Deku Studies", course_code: "DKS114")
     course.course_instructors << new_instructor
     course.course_students << new_student
     assert course.reload.course_students.include?(new_student)
