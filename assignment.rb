@@ -1,7 +1,8 @@
 class Assignment < ActiveRecord::Base
   belongs_to :course
-  has_many :pre_lessons, foreign_key: :pre_class_assignment_id, class_name: "Lesson"
-  has_many :in_lessons, foreign_key: :in_class_assignment_id, class_name: "Lesson"
+  has_many  :pre_lessons, foreign_key: :pre_class_assignment_id, class_name: "Lesson"
+  has_many  :in_lessons, foreign_key: :in_class_assignment_id, class_name: "Lesson"
+  has_one   :assignment_grade
   validates :course_id, presence: :true
   validates :name, presence: :true, :uniqueness => {:scope => :course_id}
   validates :percent_of_grade, presence: :true
