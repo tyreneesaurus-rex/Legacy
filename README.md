@@ -6,7 +6,7 @@ An exercise in associations and validations using a program that connects users 
 
 ### Examples: 
 
-#### Associating 'schools' with 'terms'
+##### Associating *'schools'* with *'terms'*
 ```ruby
   class School < ActiveRecord::Base
     has_many :terms
@@ -42,7 +42,7 @@ And
 
 ```
 
-#### Testing the association.
+##### Testing the association.
 ```ruby
     def test_associate_schools_and_terms_02
     assert School.reflect_on_association(:terms).macro == :has_many
@@ -53,7 +53,7 @@ And
   end
 ```
 
-#### Associating lessons with their in-class assignments.
+##### Associating *'lessons'* with their in-class assignments.
 ```ruby
   class Lesson < ActiveRecord::Base
     belongs_to :pre_assignment, class_name: "Assignment"
@@ -65,7 +65,7 @@ And
 ...
 ```
 
-#### Testing the association.
+##### Testing the association.
 ```ruby
   def test_in_class_assignment_lesson
       assignment = Assignment.create()
@@ -75,7 +75,7 @@ And
     end
 
 ```
-#### Validating that the Readings url must start with `http://` or `https://` using regular expressions.
+##### Validating that the Readings url must start with `http://` or `https://` using regular expressions.
 ```ruby
   class Reading < ActiveRecord::Base
     validates :order_number,  presence: :true
@@ -95,7 +95,7 @@ And
 
 ```
 
-#### Testing our validation.
+##### Testing our validation.
 ```ruby
   def test_reading_url_starts_with_http_11
     r = Reading.new(order_number: 1, lesson_id: 4, url: "htt//www.example.com")
