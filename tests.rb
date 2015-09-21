@@ -316,10 +316,18 @@ class ApplicationTest < Minitest::Test
     assert a.assignment_grade = g
   end
 
-  # def test_courses_can_have_many_instructors
-  #   elective = Course.new(name: "THE MOON IS TRYING TO KILL US ALL!", course_code: "AGH111")
-  #   skull_kid = User.new(first_name: "Skull", last_name: "Kid", email: "IStoleYourHorse@lololol.com", photo_url: "https://www.skullkidsthebest.com/newmask.jpg")
+  def test_courses_can_have_many_instructors
+    elective = Course.new(name: "THE MOON IS TRYING TO KILL US ALL!", course_code: "AGH111")
+    skull_kid = User.new(first_name: "Skull", last_name: "Kid", email: "IStoleYourHorse@lololol.com", photo_url: "https://www.skullkidsthebest.com/newmask.jpg")
+
+    assert elective.instructors << skull_kid
+  end
+
+  # def test_assignments_due_after_active_date
+  #   valid = Assignment.new(name: "Streams - Scary, 100' Cliff Over a River - Not So Bad. The Confusing Mind of Epona", course_id: 7, percent_of_grade: 20, active_at: "09-20-15", due_at: "09-27-15")
+  #   invalid = Assignment.new(name: "Streams - Scary, 100' Cliff Over a River - Not So Bad. The Confusing Mind of Epona", course_id: 8, percent_of_grade: 20, active_at: "09-20-15", due_at: "09-01-15")
   #
-  #   assert elective.instructors << skull_kid
+  #   assert valid.save
+  #   refute invalid.save
   # end
 end
